@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace TheHangMan
 {
-    internal class Program
+    public class Program
     {
-        WordProvider wordProvider = WordProvider.GetInstance();
+        public static WordProvider wordProvider = WordProvider.GetInstance();
+        public static Illustrator illustrator = new Illustrator();
 
-        private int MAX_MISTAKES_AVAILABLE = 5;
-        private string currentWord = "";
+        //private int MAX_MISTAKES_AVAILABLE = 6;
+        public static string currentWord = "";
 
         static void Main(string[] args)
         {
@@ -29,7 +30,12 @@ namespace TheHangMan
 
         static void StartMatch()
         {
-            //printar aqui a forca vazia
+            illustrator.PrintEmpyGallows();
+            currentWord = wordProvider.GetNewWord();
+
+
+            Console.WriteLine("\nNew word is " + currentWord);
+
             //escolher uma palavra e desenhar os traços
             //chamar gameloop
             MatchLoop();
@@ -37,8 +43,8 @@ namespace TheHangMan
 
         static void MatchLoop()
         {
-            int currentMistakesMade = 0;
-            List<char> wordsTried = new List<char>();
+            //int currentMistakesMade = 0;
+            //List<char> wordsTried = new List<char>();
             //enquanto a palavra estiver sendo descoberta mantém o loop
 
             ClearMatchScreen();
