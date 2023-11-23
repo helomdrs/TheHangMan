@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace TheHangMan
@@ -33,7 +34,9 @@ namespace TheHangMan
 
         private void GenerateWordsList()
         {
-            string filePath = "D:\\Documents\\Projects\\Unity\\TheHangMan\\TheHangMan\\WordsBank.txt";
+            //string filePath = "D:\\Documents\\Projects\\Unity\\TheHangMan\\TheHangMan\\WordsBank.txt";
+
+            string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"WordsBank.txt");
             wordsBank = new List<string>(File.ReadAllLines(filePath));
         }
 
