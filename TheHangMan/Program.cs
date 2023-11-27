@@ -74,7 +74,7 @@ namespace TheHangMan
                         currentMistakesMade++;
                     }
 
-                    illustrator.PrintHangMan(currentMistakesMade);
+                    Illustrator.PrintHangMan(currentMistakesMade);
                     PrintWord(lettersTried);
                 }
             }
