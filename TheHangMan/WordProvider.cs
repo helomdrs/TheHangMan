@@ -55,7 +55,7 @@ namespace TheHangMan
             }
 
             wordsUsed.Add(wordToReturn);
-            return wordToReturn;
+            return wordToReturn.ToLower();
         }
 
         private string GetRandomWord()
