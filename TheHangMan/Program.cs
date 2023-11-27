@@ -1,56 +1,148 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TheHangMan
 {
-    public class Program
+    internal class Program
     {
         public static WordProvider wordProvider = WordProvider.GetInstance();
-        public static Illustrator illustrator = new Illustrator();
 
-        //private int MAX_MISTAKES_AVAILABLE = 6;
+        public static int MAX_MISTAKES_AVAILABLE = 6;
         public static string currentWord = "";
 
         static void Main(string[] args)
         {
             WriteScreenHeader();
             StartMatch();
-
-            Console.ReadLine();
         }
 
-        static void WriteScreenHeader()
+        private static void WriteScreenHeader()
         {
-            Console.WriteLine("--------------- The Hangman Tale ---------------\n");
-            Console.WriteLine("--- Guess the word before the man is hangged ---\n");
+            Console.WriteLine("--------------- THE HANGMAN TALE ---------------");
+            Console.WriteLine("--- Guess the word before the man is hangged ---");
         }
 
-        static void StartMatch()
+        private static void StartMatch()
         {
-            illustrator.PrintEmpyGallows();
+            Illustrator.PrintEmpyGallows();
             currentWord = wordProvider.GetNewWord();
 
+            Console.Write("Word to Guess: ");
 
-            Console.WriteLine("\nNew word is " + currentWord);
+            for(int i = 0; i <= currentWord.Length; i++)
+            {
+                Console.Write("_ ");
+            }
 
-            //escolher uma palavra e desenhar os traços
-            //chamar gameloop
             MatchLoop();
+            return;
         }
 
-        static void MatchLoop()
+        private static void MatchLoop()
         {
-            //int currentMistakesMade = 0;
-            //List<char> wordsTried = new List<char>();
-            //enquanto a palavra estiver sendo descoberta mantém o loop
+            int currentMistakesMade = 0;
+            int lettersGuessedAmount = 0;
+            bool wonMatch = false;
+            List<char> lettersTried = new List<char>();
+            
+            while (currentMistakesMade != MAX_MISTAKES_AVAILABLE && lettersGuessedAmount != currentWord.Length) 
+            {
+                Console.Write("\n\nLetters tried: ");
+                foreach (char letter in lettersTried)
+                {
+                    Console.Write(letter + " ");
+                }
 
-            ClearMatchScreen();
+                Console.Write("\nGuess a letter: ");
+                char guess = Console.ReadLine()[0];
+
+                if (!lettersTried.Contains(guess)) 
+                {
+                    lettersTried.Add(guess);
+                    bool guessedRight = TreatPlayerGuess(guess);
+                 
+                    if (guessedRight) 
+                    { 
+                        lettersGuessedAmount++; 
+                    }
+                    else
+                    {
+                        currentMistakesMade++;
+                    }
+
+                    illustrator.PrintHangMan(currentMistakesMade);
+                    PrintWord(lettersTried);
+                }
+            }
+
+            if (lettersGuessedAmount == currentWord.Length)
+            {
+                wonMatch = true;
+            }
+
+            MatchOver(wonMatch);
+            return;
         }
 
-        static void ClearMatchScreen()
+        private static void PrintWord(List<char> guessedLetters) 
+        {
+            Console.Write("\r\n");
+
+            foreach (char c in currentWord)
+            {
+                if(guessedLetters.Contains(c))
+                {
+                    Console.Write(c);
+                }
+                else 
+                {
+                    Console.Write("_ ");
+                }
+            }
+
+            return;
+        }
+
+        private static bool TreatPlayerGuess(char c)
+        {
+            for (int i = 0; i < currentWord.Length; i++)
+            {
+                if (c == currentWord[i])
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void MatchOver(bool wonMatch)
+        {
+            Console.Write("\r\n");
+            Console.WriteLine(currentWord);
+
+            string winMessage = "You win!";
+            string looseMessage = "You loose...";
+            
+            if (wonMatch)
+            {
+                Console.WriteLine(winMessage);
+            }
+            else
+            {
+                Console.WriteLine(looseMessage);
+            }
+
+            Console.WriteLine("GAME OVER");
+            Console.ReadLine();
+            //ClearMatchScreen();
+        }
+
+        private static void ClearMatchScreen()
         {
             Console.Clear();
             WriteScreenHeader();
