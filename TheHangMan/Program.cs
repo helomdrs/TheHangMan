@@ -9,15 +9,10 @@ namespace TheHangMan
 {
     internal class Program
     {
-        WordProvider wordProvider = WordProvider.GetInstance();
+        public static WordProvider wordProvider = WordProvider.GetInstance();
 
-<<<<<<< Updated upstream
-        private int MAX_MISTAKES_AVAILABLE = 5;
-        private string currentWord = "";
-=======
         public static int MAX_MISTAKES_AVAILABLE = 6;
         public static string currentWord = "";
->>>>>>> Stashed changes
 
         static void Main(string[] args)
         {
@@ -33,12 +28,7 @@ namespace TheHangMan
 
         private static void StartMatch()
         {
-<<<<<<< Updated upstream
-            //printar aqui a forca vazia
-            //escolher uma palavra e desenhar os traços
-            //chamar gameloop
-=======
-            illustrator.PrintEmpyGallows();
+            Illustrator.PrintEmpyGallows();
             currentWord = wordProvider.GetNewWord();
 
             Console.Write("Word to Guess: ");
@@ -48,7 +38,6 @@ namespace TheHangMan
                 Console.Write("_ ");
             }
 
->>>>>>> Stashed changes
             MatchLoop();
             return;
         }
@@ -56,10 +45,6 @@ namespace TheHangMan
         private static void MatchLoop()
         {
             int currentMistakesMade = 0;
-<<<<<<< Updated upstream
-            List<char> wordsTried = new List<char>();
-            //enquanto a palavra estiver sendo descoberta mantém o loop
-=======
             int lettersGuessedAmount = 0;
             bool wonMatch = false;
             List<char> lettersTried = new List<char>();
@@ -71,7 +56,6 @@ namespace TheHangMan
                 {
                     Console.Write(letter + " ");
                 }
->>>>>>> Stashed changes
 
                 Console.Write("\nGuess a letter: ");
                 char guess = Console.ReadLine()[0];
