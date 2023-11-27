@@ -8,7 +8,7 @@ namespace TheHangMan
 {
     public class Illustrator
     {
-        public void PrintEmpyGallows()
+        public static void PrintEmpyGallows()
         {
             Console.WriteLine("    +-------+");
             Console.WriteLine("    |       |");
@@ -22,7 +22,7 @@ namespace TheHangMan
             Console.WriteLine("----|---------------");
         }
 
-        public void PrintHangMan(int amountOfBodyPartsToDisplay)
+        public static void PrintHangMan(int amountOfBodyPartsToDisplay)
         {
             switch (amountOfBodyPartsToDisplay)
             {
