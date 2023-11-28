@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TheHangMan
 {
@@ -31,8 +29,6 @@ namespace TheHangMan
             Illustrator.PrintEmpyGallows();
             currentWord = wordProvider.GetNewWord();
 
-            Console.Write("Word to Guess: ");
-
             for(int i = 0; i <= currentWord.Length; i++)
             {
                 Console.Write("_ ");
@@ -58,24 +54,27 @@ namespace TheHangMan
                 }
 
                 Console.Write("\nGuess a letter: ");
-                char guess = Console.ReadLine()[0];
+                string input = Console.ReadLine();
 
-                if (!lettersTried.Contains(guess)) 
+                if (input.Length != 0)
                 {
-                    lettersTried.Add(guess);
-                    bool guessedRight = TreatPlayerGuess(guess);
-                 
-                    if (guessedRight) 
-                    { 
-                        lettersGuessedAmount++; 
-                    }
-                    else
+                    char guess = input[0];
+                    if (!lettersTried.Contains(guess))
                     {
-                        currentMistakesMade++;
-                    }
+                        lettersTried.Add(guess);
+                        int lettersGuessed = TreatPlayerGuess(guess);
 
-                    Illustrator.PrintHangMan(currentMistakesMade);
-                    PrintWord(lettersTried);
+                        if (lettersGuessed > 0)
+                        {
+                            lettersGuessedAmount += lettersGuessed;
+                        }
+                        else
+                        {
+                            currentMistakesMade++;
+                        }
+
+                        UpdateScreen(currentMistakesMade, lettersTried);
+                    } 
                 }
             }
 
@@ -88,6 +87,16 @@ namespace TheHangMan
             return;
         }
 
+        private static void UpdateScreen(int mistakesMade, List<char> lettersTried)
+        {
+            Console.Clear();
+
+            WriteScreenHeader();
+            Illustrator.PrintHangMan(mistakesMade);
+            PrintWord(lettersTried);
+        }
+
+
         private static void PrintWord(List<char> guessedLetters) 
         {
             Console.Write("\r\n");
@@ -96,7 +105,7 @@ namespace TheHangMan
             {
                 if(guessedLetters.Contains(c))
                 {
-                    Console.Write(c);
+                    Console.Write(c + " ");
                 }
                 else 
                 {
@@ -107,45 +116,70 @@ namespace TheHangMan
             return;
         }
 
-        private static bool TreatPlayerGuess(char c)
+        private static int TreatPlayerGuess(char c)
         {
+            int amountOfLettersDiscovered = 0;
+
             for (int i = 0; i < currentWord.Length; i++)
             {
                 if (c == currentWord[i])
                 {
-                    return true;
+                    amountOfLettersDiscovered++;
                 }
             }
 
-            return false;
+            return amountOfLettersDiscovered;
         }
 
         private static void MatchOver(bool wonMatch)
         {
             Console.Write("\r\n");
-            Console.WriteLine(currentWord);
 
+            string wordInfo = " The word was " + currentWord + ".";
             string winMessage = "You win!";
             string looseMessage = "You loose...";
             
             if (wonMatch)
             {
-                Console.WriteLine(winMessage);
+                Console.WriteLine(winMessage + wordInfo);
             }
             else
             {
-                Console.WriteLine(looseMessage);
+                Console.WriteLine(looseMessage + wordInfo);
             }
 
-            Console.WriteLine("GAME OVER");
-            Console.ReadLine();
-            //ClearMatchScreen();
+            RequestRestart();
         }
 
-        private static void ClearMatchScreen()
+        private static void RequestRestart() 
+        {
+            Console.Write("Do you wanna play again? y/n ");
+            char userResponse = Console.ReadLine()[0];
+
+            switch (userResponse)
+            {
+                case 'y':
+                    Console.WriteLine("Press to start a new match.");
+                    Console.ReadLine();
+                    RestartMatch();
+                    break;
+                case 'n':
+                    Console.WriteLine("Press to close the application.");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Please choose only y/n for the answer!");
+                    RequestRestart();
+                    break;
+            }
+        }
+
+        private static void RestartMatch()
         {
             Console.Clear();
             WriteScreenHeader();
+            StartMatch();
         }
     }
 }

@@ -10,8 +10,6 @@ namespace TheHangMan
     {
         private static WordProvider instance;
 
-        private const string WORDS_FILE_NAME = "WordsBank.txt";
-
         private List<string> wordsUsed = new List<string>();
         private List<string> wordsBank;
 
