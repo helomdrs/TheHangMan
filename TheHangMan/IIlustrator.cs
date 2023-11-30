@@ -4,7 +4,9 @@ namespace TheHangMan
 {
     interface IIlustrator
     {
-        void WriteScreenHeader();
+        void PrintScreenHeader();
+
+        void PrintLettersTried(List<char> lettersTried);
 
         void PrintWord(List<char> guessedLetters, string currentWord);
 

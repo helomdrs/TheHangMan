@@ -8,13 +8,16 @@ namespace TheHangMan
         public static WordProvider wordProvider = WordProvider.GetInstance();
         public static IIlustrator ilustrator = new Ilustrator();
 
+        public static List<char> lettersTried = new List<char>();
         public static int MAX_MISTAKES_AVAILABLE = 6;
         public static string currentWord = "";
-        public static List<char> lettersTried = new List<char>();
+
+        public delegate int TreatPlayerGuess(char guess);
+        public delegate void UpdateScreen(int currentMistakesMade);
 
         static void Main(string[] args)
         {
-            ilustrator.WriteScreenHeader();
+            ilustrator.PrintScreenHeader();
             StartMatch();
         }
 
@@ -25,11 +28,14 @@ namespace TheHangMan
             ilustrator.PrintEmpyGallows();
             ilustrator.PrintWord(lettersTried, currentWord);
 
-            MatchLoop();
+            TreatPlayerGuess treatPlayerGuess = DelegateTreatPlayerGuess;
+            UpdateScreen updateScreen = DelegateUpdateScreen;
+
+            MatchLoop(treatPlayerGuess, updateScreen);
             return;
         }
 
-        private static void MatchLoop()
+        private static void MatchLoop(TreatPlayerGuess treatPlayerGuess, UpdateScreen updateScreen)
         {
             int currentMistakesMade = 0;
             int lettersGuessedAmount = 0;
@@ -37,11 +43,7 @@ namespace TheHangMan
             
             while (currentMistakesMade != MAX_MISTAKES_AVAILABLE && lettersGuessedAmount != currentWord.Length) 
             {
-                Console.Write("\n\nLetters tried: ");
-                foreach (char letter in lettersTried)
-                {
-                    Console.Write(letter + " ");
-                }
+                ilustrator.PrintLettersTried(lettersTried);
 
                 Console.Write("\nGuess a letter: ");
                 string input = Console.ReadLine();
@@ -52,7 +54,7 @@ namespace TheHangMan
                     if (!lettersTried.Contains(guess))
                     {
                         lettersTried.Add(guess);
-                        int lettersGuessed = TreatPlayerGuess(guess);
+                        int lettersGuessed = treatPlayerGuess(guess);
 
                         if (lettersGuessed > 0)
                         {
@@ -63,7 +65,7 @@ namespace TheHangMan
                             currentMistakesMade++;
                         }
 
-                        UpdateScreen(currentMistakesMade);
+                        updateScreen(currentMistakesMade);
                     } 
                 }
             }
@@ -77,16 +79,16 @@ namespace TheHangMan
             return;
         }
 
-        private static void UpdateScreen(int mistakesMade)
+        private static void DelegateUpdateScreen(int mistakesMade)
         {
             Console.Clear();
 
-            ilustrator.WriteScreenHeader();
+            ilustrator.PrintScreenHeader();
             ilustrator.PrintHangMan(mistakesMade);
             ilustrator.PrintWord(lettersTried, currentWord);
         }
 
-        private static int TreatPlayerGuess(char c)
+        private static int DelegateTreatPlayerGuess(char c)
         {
             int amountOfLettersDiscovered = 0;
 
@@ -104,7 +106,7 @@ namespace TheHangMan
         private static void MatchOver(bool wonMatch)
         {
             Console.Clear ();
-            ilustrator.WriteScreenHeader();
+            ilustrator.PrintScreenHeader();
 
             string wordInfo = " The word was " + currentWord + ".";
             string winMessage = "You win!";
@@ -153,7 +155,7 @@ namespace TheHangMan
             lettersTried.Clear();
             currentWord = "";
 
-            ilustrator.WriteScreenHeader();
+            ilustrator.PrintScreenHeader();
             StartMatch();
         }
     }

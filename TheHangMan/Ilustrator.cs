@@ -21,11 +21,20 @@ namespace TheHangMan
             Console.WriteLine("----|---------------");
         }
 
-        void IIlustrator.WriteScreenHeader()
+        void IIlustrator.PrintScreenHeader()
         {
             Console.WriteLine("--------------- THE HANGMAN TALE ---------------");
             Console.WriteLine("--- Guess the word before the man is hangged ---");
             Console.WriteLine("");
+        }
+
+        void IIlustrator.PrintLettersTried(List<char> lettersTried)
+        {
+            Console.Write("\n\nLetters tried: ");
+            foreach (char letter in lettersTried)
+            {
+                Console.Write(letter + " ");
+            }
         }
 
         void IIlustrator.PrintWord(List<char> guessedLetters, string currentWord)
