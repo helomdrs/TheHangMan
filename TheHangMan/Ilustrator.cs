@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TheHangMan
 {
-    public class Illustrator
+    public class Ilustrator : IIlustrator
     {
-        public static void PrintEmpyGallows()
+        private static readonly IIlustrator ilustrator = new Ilustrator();
+
+        void IIlustrator.PrintEmpyGallows()
         {
             Console.WriteLine("    +-------+");
             Console.WriteLine("    |       |");
@@ -22,12 +21,46 @@ namespace TheHangMan
             Console.WriteLine("----|---------------");
         }
 
-        public static void PrintHangMan(int amountOfBodyPartsToDisplay)
+        void IIlustrator.WriteScreenHeader()
+        {
+            Console.WriteLine("--------------- THE HANGMAN TALE ---------------");
+            Console.WriteLine("--- Guess the word before the man is hangged ---");
+            Console.WriteLine("");
+        }
+
+        void IIlustrator.PrintWord(List<char> guessedLetters, string currentWord)
+        {
+            Console.Write("\r\n");
+
+            if (guessedLetters.Count == 0)
+            {
+                for (int i = 0; i <= currentWord.Length; i++)
+                {
+                    Console.Write("_ ");
+                }
+            } 
+            else
+            {
+                foreach (char c in currentWord)
+                {
+                    if (guessedLetters.Contains(c))
+                    {
+                        Console.Write(c + " ");
+                    }
+                    else
+                    {
+                        Console.Write("_ ");
+                    }
+                }
+            }
+        }
+
+        void IIlustrator.PrintHangMan(int amountOfBodyPartsToDisplay)
         {
             switch (amountOfBodyPartsToDisplay)
             {
                 case 0:
-                    PrintEmpyGallows();
+                    ilustrator.PrintEmpyGallows();
                     break;
                 case 1:
                     Console.WriteLine("    +-------+");
@@ -102,7 +135,7 @@ namespace TheHangMan
                     Console.WriteLine("----|---------------");
                     break;
                 default:
-                    PrintEmpyGallows();
+                    ilustrator.PrintEmpyGallows();
                     break;
             }
         }

@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Illustrator.cs" />
+    <Compile Include="Ilustrator.cs" />
+    <Compile Include="IIlustrator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WordProvider.cs" />

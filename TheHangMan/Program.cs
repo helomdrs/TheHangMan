@@ -1,38 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 
 namespace TheHangMan
 {
     internal class Program
     {
         public static WordProvider wordProvider = WordProvider.GetInstance();
+        public static IIlustrator ilustrator = new Ilustrator();
 
         public static int MAX_MISTAKES_AVAILABLE = 6;
         public static string currentWord = "";
+        public static List<char> lettersTried = new List<char>();
 
         static void Main(string[] args)
         {
-            WriteScreenHeader();
+            ilustrator.WriteScreenHeader();
             StartMatch();
-        }
-
-        private static void WriteScreenHeader()
-        {
-            Console.WriteLine("--------------- THE HANGMAN TALE ---------------");
-            Console.WriteLine("--- Guess the word before the man is hangged ---");
         }
 
         private static void StartMatch()
         {
-            Illustrator.PrintEmpyGallows();
             currentWord = wordProvider.GetNewWord();
 
-            for(int i = 0; i <= currentWord.Length; i++)
-            {
-                Console.Write("_ ");
-            }
+            ilustrator.PrintEmpyGallows();
+            ilustrator.PrintWord(lettersTried, currentWord);
 
             MatchLoop();
             return;
@@ -43,7 +34,6 @@ namespace TheHangMan
             int currentMistakesMade = 0;
             int lettersGuessedAmount = 0;
             bool wonMatch = false;
-            List<char> lettersTried = new List<char>();
             
             while (currentMistakesMade != MAX_MISTAKES_AVAILABLE && lettersGuessedAmount != currentWord.Length) 
             {
@@ -73,7 +63,7 @@ namespace TheHangMan
                             currentMistakesMade++;
                         }
 
-                        UpdateScreen(currentMistakesMade, lettersTried);
+                        UpdateScreen(currentMistakesMade);
                     } 
                 }
             }
@@ -87,33 +77,13 @@ namespace TheHangMan
             return;
         }
 
-        private static void UpdateScreen(int mistakesMade, List<char> lettersTried)
+        private static void UpdateScreen(int mistakesMade)
         {
             Console.Clear();
 
-            WriteScreenHeader();
-            Illustrator.PrintHangMan(mistakesMade);
-            PrintWord(lettersTried);
-        }
-
-
-        private static void PrintWord(List<char> guessedLetters) 
-        {
-            Console.Write("\r\n");
-
-            foreach (char c in currentWord)
-            {
-                if(guessedLetters.Contains(c))
-                {
-                    Console.Write(c + " ");
-                }
-                else 
-                {
-                    Console.Write("_ ");
-                }
-            }
-
-            return;
+            ilustrator.WriteScreenHeader();
+            ilustrator.PrintHangMan(mistakesMade);
+            ilustrator.PrintWord(lettersTried, currentWord);
         }
 
         private static int TreatPlayerGuess(char c)
@@ -133,7 +103,8 @@ namespace TheHangMan
 
         private static void MatchOver(bool wonMatch)
         {
-            Console.Write("\r\n");
+            Console.Clear ();
+            ilustrator.WriteScreenHeader();
 
             string wordInfo = " The word was " + currentWord + ".";
             string winMessage = "You win!";
@@ -148,6 +119,7 @@ namespace TheHangMan
                 Console.WriteLine(looseMessage + wordInfo);
             }
 
+            Console.WriteLine();
             RequestRestart();
         }
 
@@ -171,14 +143,17 @@ namespace TheHangMan
                 default:
                     Console.WriteLine("Please choose only y/n for the answer!");
                     RequestRestart();
-                    break;
+                break;
             }
         }
 
         private static void RestartMatch()
         {
             Console.Clear();
-            WriteScreenHeader();
+            lettersTried.Clear();
+            currentWord = "";
+
+            ilustrator.WriteScreenHeader();
             StartMatch();
         }
     }
